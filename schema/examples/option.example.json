@@ -70,7 +70,6 @@
       "pnl_realized": "-1220.00",
       "risk": {
         "conviction": 0.71,
-        "sentiment_score": 0.29,
         "horizon": "position",
         "value_at_risk_1d": "9870.00"
       },
@@ -92,8 +91,7 @@
       "position_delta": {
         "prev_position_ref": "deribit-btc-20260626-80000-c@2026-04-24T100000Z",
         "quantity_change": "5",
-        "notional_change": "21900.00",
-        "churn_flag": false
+        "notional_change": "21900.00"
       },
       "tags": [
         "vol-upside",
@@ -101,11 +99,5 @@
       ],
       "raw_ref": "ipfs://bafkreia42w67vyxst9f"
     }
-  ],
-  "aggregate_signals": {
-    "sentiment_index": 0.26,
-    "positioning_bias": "risk_on",
-    "churn_risk_score": 0.22,
-    "strategy_hint": "follow_trend"
-  }
+  ]
 }

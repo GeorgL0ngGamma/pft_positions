@@ -78,7 +78,6 @@
       "pnl_realized": "8200.00",
       "risk": {
         "conviction": 0.67,
-        "sentiment_score": 0.35,
         "horizon": "long_term",
         "value_at_risk_1d": "15240.00"
       },
@@ -98,8 +97,7 @@
       "position_delta": {
         "prev_position_ref": "binance-staking-bnb-flex@2026-04-24T100500Z",
         "quantity_change": "100.00",
-        "notional_change": "59820.00",
-        "churn_flag": false
+        "notional_change": "59820.00"
       },
       "tags": [
         "carry",
@@ -129,7 +127,6 @@
       "pnl_realized": "0.00",
       "risk": {
         "conviction": 0.74,
-        "sentiment_score": 0.18,
         "horizon": "position",
         "value_at_risk_1d": "3100.00"
       },
@@ -151,21 +148,13 @@
       "position_delta": {
         "prev_position_ref": "arbitrum-usdai-vault-main@2026-04-24T100500Z",
         "quantity_change": "-15000.00",
-        "notional_change": "-15000.00",
-        "churn_flag": true
+        "notional_change": "-15000.00"
       },
       "tags": [
         "real-world-use-case",
-        "onchain-yield",
-        "churn-signal"
+        "onchain-yield"
       ],
       "raw_ref": "ipfs://bafkreifkgm3oq7a4h"
     }
-  ],
-  "aggregate_signals": {
-    "sentiment_index": 0.19,
-    "positioning_bias": "neutral",
-    "churn_risk_score": 0.58,
-    "strategy_hint": "contrarian"
-  }
+  ]
 }

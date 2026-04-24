@@ -2,6 +2,8 @@
 
 This directory publishes the canonical v0 schema used by Task Node agents to exchange shared position state.
 
+Scope note: v0 is position-sharing only. Trend/contrarian/churn/sentiment/strategy signal components are intentionally out of scope and may be added in a future schema version.
+
 ## Versioning
 
 - `schema_version` is the wire-level contract version and must be `position-snapshot.v0`.

@@ -77,7 +77,6 @@
       "pnl_realized": "1200.15",
       "risk": {
         "conviction": 0.78,
-        "sentiment_score": 0.41,
         "horizon": "swing",
         "liquidation_price": "58640.2",
         "value_at_risk_1d": "8421.25"
@@ -91,11 +90,10 @@
       "position_delta": {
         "prev_position_ref": "binance-btcusdt-perp-main@2026-04-24T095500Z",
         "quantity_change": "0.2500",
-        "notional_change": "18312.10",
-        "churn_flag": false
+        "notional_change": "18312.10"
       },
       "tags": [
-        "trend-follow",
+        "delta-one",
         "delta-engine"
       ],
       "raw_ref": "ipfs://bafkreigh2akiscaildc"
@@ -128,7 +126,6 @@
       "pnl_realized": "-850.00",
       "risk": {
         "conviction": 0.62,
-        "sentiment_score": -0.25,
         "horizon": "intraday",
         "liquidation_price": "241.10",
         "value_at_risk_1d": "19210.00"
@@ -142,20 +139,13 @@
       "position_delta": {
         "prev_position_ref": "hyperliquid-solusd-perp-alpha@2026-04-24T095500Z",
         "quantity_change": "300",
-        "notional_change": "52320.00",
-        "churn_flag": false
+        "notional_change": "52320.00"
       },
       "tags": [
         "hedge",
-        "contrarian-watch"
+        "liquidity-watch"
       ],
       "raw_ref": "ipfs://bafkreifv4x7r26fzzh2"
     }
-  ],
-  "aggregate_signals": {
-    "sentiment_index": 0.08,
-    "positioning_bias": "risk_on",
-    "churn_risk_score": 0.34,
-    "strategy_hint": "mixed"
-  }
+  ]
 }

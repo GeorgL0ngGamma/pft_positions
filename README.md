@@ -12,6 +12,8 @@ This repository defines:
 
 The v0 scope is intentionally narrow and implementation-ready so future adapter work (for example, CCXT-based exchange adapters) can plug into stable field names and semantics.
 
+v0 is intentionally limited to position sharing. Trend/contrarian/churn/sentiment/strategy signal components are not part of this schema and can be added in a future version.
+
 ## Validate examples against schema
 
 ```bash
