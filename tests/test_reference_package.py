@@ -79,7 +79,17 @@ def test_raw_fixtures_are_paired_with_normalized_fixtures() -> None:
 def test_validate_cli_accepts_fixture_directory() -> None:
     result = _run_cli("validate", str(FIXTURES))
     assert result.returncode == 0
-    assert "PASS" in result.stdout
+    report = json.loads(result.stdout)
+    assert report["valid"] is True
+    assert report["schema_version"] is None
+    assert report["errors"] == []
+    assert report["warnings"] == []
+    assert [Path(file_report["file"]).name for file_report in report["files"]] == [
+        "delta-one.json",
+        "option.json",
+        "yield.json",
+    ]
+    assert all(file_report["schema_version"] == "position-snapshot.v0" for file_report in report["files"])
 
 
 def test_validate_cli_rejects_bad_file(tmp_path: Path) -> None:
@@ -89,7 +99,22 @@ def test_validate_cli_rejects_bad_file(tmp_path: Path) -> None:
     bad_file.write_text(json.dumps(snapshot), encoding="utf-8")
     result = _run_cli("validate", str(bad_file))
     assert result.returncode == 1
-    assert "hash mismatch" in result.stdout
+    report = json.loads(result.stdout)
+    assert report["valid"] is False
+    assert report["schema_version"] == "position-snapshot.v0"
+    assert report["warnings"] == []
+    assert any(error["path"] == "/provenance/content_hash" for error in report["errors"])
+
+
+def test_validate_cli_file_report_has_required_fields() -> None:
+    result = _run_cli("validate", str(FIXTURES / "delta-one.json"))
+    assert result.returncode == 0
+    report = json.loads(result.stdout)
+    assert set(["valid", "schema_version", "errors", "warnings"]).issubset(report)
+    assert report["valid"] is True
+    assert report["schema_version"] == "position-snapshot.v0"
+    assert report["errors"] == []
+    assert report["warnings"] == []
 
 
 def test_emit_cli_outputs_valid_fixture_json() -> None:

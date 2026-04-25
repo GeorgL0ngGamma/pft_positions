@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
+from pathlib import Path
 
 from .canonical import canonical_json
 from .fixtures import fixture_names, load_fixture
 from .io import dump_json, load_json
-from .validate import validate_path, validate_snapshot
+from .validate import ValidationIssue, validate_snapshot
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -37,17 +39,20 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _validate(path: str) -> int:
-    results = validate_path(path)
-    failed = False
-    for file_path, issues in results.items():
-        if issues:
-            failed = True
-            print(f"FAIL {file_path}")
-            for issue in issues:
-                print(f"  - {issue}")
-        else:
-            print(f"PASS {file_path}")
-    return 1 if failed else 0
+    target = Path(path)
+    if target.is_file():
+        report = _file_report(target)
+    else:
+        files = [_file_report(file_path) for file_path in sorted(target.glob("*.json"))]
+        report = {
+            "valid": all(file_report["valid"] for file_report in files),
+            "schema_version": None,
+            "errors": [],
+            "warnings": [],
+            "files": files,
+        }
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if report["valid"] else 1
 
 
 def _parse(path: str) -> int:
@@ -77,6 +82,37 @@ def _emit(name: str | None, list_requested: bool) -> int:
         return 2
     dump_json(fixture, sys.stdout)
     return 0
+
+
+def _file_report(path: Path) -> dict[str, object]:
+    try:
+        snapshot = load_json(path)
+    except json.JSONDecodeError as exc:
+        return _report_for_issues(path, None, [ValidationIssue("/", f"invalid JSON: {exc.msg}")])
+    schema_version = snapshot.get("schema_version") if isinstance(snapshot, dict) else None
+    if not isinstance(snapshot, dict):
+        return _report_for_issues(path, schema_version, [ValidationIssue("/", "snapshot must be a JSON object")])
+    return _report_for_issues(path, schema_version, validate_snapshot(snapshot))
+
+
+def _report_for_issues(
+    path: Path,
+    schema_version: object,
+    issues: list[ValidationIssue],
+) -> dict[str, object]:
+    return {
+        "valid": not issues,
+        "schema_version": schema_version,
+        "errors": [
+            {
+                "path": issue.path,
+                "message": issue.message,
+            }
+            for issue in issues
+        ],
+        "warnings": [],
+        "file": str(path),
+    }
 
 
 if __name__ == "__main__":

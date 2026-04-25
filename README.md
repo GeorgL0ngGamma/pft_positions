@@ -53,12 +53,16 @@ Paired raw fixtures:
 
 The v0 content hash rule is explicit: compute SHA-256 over canonical JSON bytes after omitting `provenance.content_hash` from the object. Canonical JSON sorts object keys recursively, preserves array order, uses compact separators, and encodes UTF-8 bytes.
 
-Sample validation report:
+Sample validation report for `pft-positions validate fixtures/delta-one.json`:
 
-```text
-PASS fixtures/delta-one.json
-PASS fixtures/option.json
-PASS fixtures/yield.json
+```json
+{
+  "valid": true,
+  "schema_version": "position-snapshot.v0",
+  "errors": [],
+  "warnings": [],
+  "file": "fixtures/delta-one.json"
+}
 ```
 
 ## Validate examples against schema
