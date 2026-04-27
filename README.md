@@ -7,7 +7,8 @@ Public v0 specification for machine-readable position snapshots that Post Fiat a
 **Observation**: CoinMarketCap Portfolio Snapshot feature integrated in the Task Node is limited by position type (long only), manually created portfolios as opposed to wallet-synced ones and cumbersome upload procedure 
 (re-upload a csv with new manually added transactions) - individual position updates not possible without re-upload of an entirely new .csv. 
 
-**Idea**: *Provide a general high resolution position snapshot for postfiat tasknode and AGTI*
+**Idea**: *Provide a general high resolution position snapshot for postfiat tasknode and AGTI*  
+
 **Value add**: detect user churn holding coins, get higher resolution view of positioning for other postfiat trading-related workflows.
 
 **Solution Sketch**: 
