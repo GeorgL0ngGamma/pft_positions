@@ -259,7 +259,7 @@
         },
         "instrument_type": {
           "enum": [
-            "delta_one",
+            "linear",
             "option",
             "yield"
           ]
@@ -353,7 +353,7 @@
             }
           }
         },
-        "delta_one": {
+        "linear": {
           "type": "object",
           "additionalProperties": false,
           "required": [
@@ -466,7 +466,8 @@
                 "staking",
                 "lending",
                 "vault",
-                "liquidity"
+                "liquidity",
+                "bond"
               ]
             },
             "principal": {
@@ -528,13 +529,13 @@
           "if": {
             "properties": {
               "instrument_type": {
-                "const": "delta_one"
+                "const": "linear"
               }
             }
           },
           "then": {
             "required": [
-              "delta_one",
+              "linear",
               "ccxt"
             ]
           }

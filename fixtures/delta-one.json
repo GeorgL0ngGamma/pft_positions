@@ -25,7 +25,7 @@
         "fetched_at": "2026-04-24T10:00:00Z"
       }
     ],
-    "content_hash": "f2193869b5c4127fba723d4eb98a508ddb61d81b871d3625f04d6f3f497883ad"
+    "content_hash": "58648428c51eeba9af3c1d1f1e507257ef6df8ada8d6055753dff06511a2b789"
   },
   "normalization": {
     "numeric_encoding": "decimal-string",
@@ -36,7 +36,7 @@
   "positions": [
     {
       "position_id": "fixture-btc-perp",
-      "instrument_type": "delta_one",
+      "instrument_type": "linear",
       "asset_class": "crypto",
       "venue": {
         "venue_id": "binance",
@@ -60,7 +60,7 @@
         "liquidation_price": "50000.00",
         "value_at_risk_1d": "3500.00"
       },
-      "delta_one": {
+      "linear": {
         "symbol": "BTCUSDT",
         "contract_kind": "perpetual",
         "entry_price": "65000.00",

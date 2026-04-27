@@ -30,6 +30,7 @@ Each source entry should include:
 - Numeric values are decimal strings (no floating-point JSON numbers).
 - Timestamps are RFC 3339 UTC (`date-time`).
 - Currency and units are explicit per field.
+- `instrument_type` uses the broad v0 categories `linear`, `option`, and `yield`.
 - `side` uses economic direction (`long`, `short`, `neutral`).
 - `valuation_ccy` is explicit and required per position.
 - `notional_value`, `mark_price`, and PnL values are normalized into the snapshot's declared valuation context.
@@ -51,8 +52,14 @@ This avoids circular hashing and makes validation deterministic across whitespac
 
 v0 requires support for three instrument categories:
 
-- `delta_one`
+- `linear`
 - `option`
 - `yield`
 
-The example payloads in `schema/examples/` cover these categories and reference Binance, Hyperliquid, Deribit, and Arbitrum-based yield context.
+`linear` covers spot, perpetual, future, and swap-style positions. `yield.position_kind` covers staking, lending, vault, liquidity, and bond positions. The example payloads in `schema/examples/` cover these categories and reference Binance, Hyperliquid, Deribit, and Arbitrum-based yield context.
+
+## Sharing Profiles
+
+- Manual sharing can use the canonical JSON emitted by the reference package.
+- TaskNode/MCP sharing can send snapshot JSON as `application/json` content through existing message interfaces.
+- Exchange adapters can publish normalized snapshots directly or store snapshot JSON in existing content-addressed storage and share the reference.

@@ -60,13 +60,14 @@ def test_hash_mismatch_fails_validation() -> None:
 
 
 def test_fixture_names_are_declared() -> None:
-    assert fixture_names() == ["delta-one", "option", "yield"]
+    assert fixture_names() == ["delta-one", "hyperliquid-hlp-child", "option", "yield"]
 
 
 def test_raw_fixtures_are_paired_with_normalized_fixtures() -> None:
     raw_dir = FIXTURES / "raw"
     expected = {
         "delta-one.raw.json": "../delta-one.json",
+        "hyperliquid-hlp-child.raw.json": "../hyperliquid-hlp-child.json",
         "option.raw.json": "../option.json",
         "yield.raw.json": "../yield.json",
     }
@@ -86,6 +87,7 @@ def test_validate_cli_accepts_fixture_directory() -> None:
     assert report["warnings"] == []
     assert [Path(file_report["file"]).name for file_report in report["files"]] == [
         "delta-one.json",
+        "hyperliquid-hlp-child.json",
         "option.json",
         "yield.json",
     ]
@@ -122,6 +124,16 @@ def test_emit_cli_outputs_valid_fixture_json() -> None:
     assert result.returncode == 0
     snapshot = json.loads(result.stdout)
     assert validate_snapshot(snapshot) == []
+
+
+def test_hyperliquid_fixture_contains_full_hlp_child_snapshot() -> None:
+    snapshot = load_fixture("hyperliquid-hlp-child")
+    positions = snapshot["positions"]
+    assert len(positions) == 190
+    assert {position["instrument_type"] for position in positions} == {"linear"}
+    assert all(position["venue"]["venue_id"] == "hyperliquid" for position in positions)
+    assert all(position["account_ref"].startswith("hyperliquid:0x010461") for position in positions)
+    assert any(position["linear"]["symbol"] == "BTC-PERP" for position in positions)
 
 
 def test_parse_cli_outputs_canonical_json() -> None:

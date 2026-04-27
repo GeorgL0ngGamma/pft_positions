@@ -12,7 +12,7 @@ This repository defines:
   - `schema/examples/option.example.json`
   - `schema/examples/yield.example.json`
 
-The v0 scope is intentionally narrow and implementation-ready so future adapter work (for example, CCXT-based exchange adapters) can plug into stable field names and semantics.
+The v0 scope is intentionally narrow and implementation-ready so future adapter work (for example, CCXT-based exchange adapters) can plug into stable field names and semantics. v0 instrument categories are `linear`, `option`, and `yield`.
 
 v0 is intentionally limited to position sharing. Trend/contrarian/churn/sentiment/strategy signal components are not part of this schema and can be added in a future version.
 
@@ -33,7 +33,7 @@ pft-positions parse fixtures/delta-one.json
 pft-positions emit delta-one
 ```
 
-The `validate` command validates JSON syntax, the v0 schema, and `provenance.content_hash`. `parse` is fixture-backed and prints canonical JSON for a valid snapshot. `emit` prints one of the bundled reference fixtures: `delta-one`, `option`, or `yield`.
+The `validate` command validates JSON syntax, the v0 schema, and `provenance.content_hash`. `parse` is fixture-backed and prints canonical JSON for a valid snapshot. `emit` prints one of the bundled reference fixtures: `delta-one`, `hyperliquid-hlp-child`, `option`, or `yield`.
 
 ## Fixture corpus
 
@@ -42,14 +42,28 @@ The `validate` command validates JSON syntax, the v0 schema, and `provenance.con
 Normalized fixtures:
 
 - `fixtures/delta-one.json`
+- `fixtures/hyperliquid-hlp-child.json`
 - `fixtures/option.json`
 - `fixtures/yield.json`
 
 Paired raw fixtures:
 
 - `fixtures/raw/delta-one.raw.json` normalizes to `fixtures/delta-one.json`
+- `fixtures/raw/hyperliquid-hlp-child.raw.json` normalizes to `fixtures/hyperliquid-hlp-child.json`
 - `fixtures/raw/option.raw.json` normalizes to `fixtures/option.json`
 - `fixtures/raw/yield.raw.json` normalizes to `fixtures/yield.json`
+
+The Hyperliquid fixture is a full delta-one/linear test case from public HLP child account `0x010461c14e146ac35fe42271bdc1134ee31c703a`. The raw fixture records the public HLP vault context used to identify whale addresses, including the HLP vault `0xdfc24b077bc1425ad1dea75bcb6f8158e10df303`, child accounts, and top public followers by vault equity. The normalized fixture contains all 190 open positions returned by Hyperliquid `clearinghouseState` at the captured `as_of` timestamp.
+
+## Sharing and ingestion
+
+Snapshots are plain JSON and can be shared in three compatible ways:
+
+- Manual sharing: paste or attach the canonical JSON produced by `pft-positions parse`.
+- TaskNode/MCP sharing: send the snapshot JSON through `pft-chatbot-mcp` as `content_type: "application/json"` with TaskNode sharing enabled.
+- Adapter sharing: exchange or wallet adapters can publish the normalized snapshot directly, or upload it to existing content storage/IPFS and share the resulting reference through current PostFiat interfaces.
+
+The sharing layer is intentionally outside the v0 schema; the snapshot remains ingestible as a standalone JSON document regardless of transport.
 
 The v0 content hash rule is explicit: compute SHA-256 over canonical JSON bytes after omitting `provenance.content_hash` from the object. Canonical JSON sorts object keys recursively, preserves array order, uses compact separators, and encodes UTF-8 bytes.
 
@@ -84,10 +98,12 @@ schema/
     yield.example.json
 fixtures/
   delta-one.json
+  hyperliquid-hlp-child.json
   option.json
   yield.json
   raw/
     delta-one.raw.json
+    hyperliquid-hlp-child.raw.json
     option.raw.json
     yield.raw.json
 src/
