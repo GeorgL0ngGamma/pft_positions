@@ -2,70 +2,131 @@
 
 Public v0 specification for machine-readable position snapshots that Task Node agents can consume as shared group state.
 
-This repository defines:
-- Canonical schema for a position snapshot (`schema/position-snapshot.v0.schema.json`)
-- Provenance and normalization conventions (`schema/README.md`)
-- Authoritative executable fixture corpus (`fixtures/`)
-- Python reference package and CLI (`pft-positions`)
-- Three documentation example payloads:
-  - `schema/examples/delta-one.example.json`
-  - `schema/examples/option.example.json`
-  - `schema/examples/yield.example.json`
+## What this repository provides
 
-The v0 scope is intentionally narrow and implementation-ready so future adapter work (for example, CCXT-based exchange adapters) can plug into stable field names and semantics. v0 instrument categories are `linear`, `option`, and `yield`.
+- **Canonical JSON Schema** (`schema/position-snapshot.v0.schema.json`) defining the wire-level shape of a position snapshot.
+- **Provenance and normalization conventions** (`schema/README.md`) covering collector identity, source evidence, content hashing, decimal-string encoding, and timestamp conventions.
+- **Executable fixture corpus** (`fixtures/`) with raw source payloads paired with normalized snapshots, including a full 190-position Hyperliquid public whale case.
+- **Python reference package and CLI** (`pft-positions`) for schema validation, canonical JSON emission, and content-hash verification.
+- **Three documentation example payloads** covering the v0 instrument categories:
+  - `schema/examples/delta-one.example.json` (Binance + Hyperliquid linear positions)
+  - `schema/examples/option.example.json` (Deribit options)
+  - `schema/examples/yield.example.json` (Binance staking + Arbitrum vault yield)
 
-v0 is intentionally limited to position sharing. Trend/contrarian/churn/sentiment/strategy signal components are not part of this schema and can be added in a future version.
+## Instrument categories
 
-## Python reference package
+v0 defines three top-level instrument categories:
+
+| Category | Covers | Detail block |
+|---|---|---|
+| `linear` | spot, perpetual, future, swap | `linear` |
+| `option` | vanilla call/put options | `option` |
+| `yield` | staking, lending, vault, liquidity, bond | `yield` |
+
+The `yield.position_kind` enum includes `bond` alongside `staking`, `lending`, `vault`, and `liquidity`. Each category has a matching detail block that becomes required when `instrument_type` is set to that category.
+
+## Scope
+
+v0 is intentionally limited to position sharing. Trend, contrarian, churn, sentiment, and strategy signal components are not part of this schema and can be added in a future version. The scope is narrow and implementation-ready so future adapter work (for example, CCXT-based exchange adapters) can plug into stable field names and semantics.
+
+## Quick start
+
+### Install the Python package
 
 ```bash
-python3 -m pytest
-PYTHONPATH=src python3 -m pft_positions.cli validate fixtures
-PYTHONPATH=src python3 -m pft_positions.cli parse fixtures/delta-one.json
-PYTHONPATH=src python3 -m pft_positions.cli emit hyperliquid-hlp-child
+pip install -e .
 ```
 
-After installing the package, the same CLI is available as:
+### Validate fixtures
 
 ```bash
 pft-positions validate fixtures
-pft-positions parse fixtures/delta-one.json
+```
+
+### Emit a bundled fixture
+
+```bash
+pft-positions emit --list
 pft-positions emit hyperliquid-hlp-child
 ```
 
-The `validate` command validates JSON syntax, the v0 schema, and `provenance.content_hash`. `parse` is fixture-backed and prints canonical JSON for a valid snapshot. `emit` prints one of the bundled reference fixtures: `delta-one`, `hyperliquid-hlp-child`, `option`, or `yield`.
+### Parse a fixture to canonical JSON
+
+```bash
+pft-positions parse fixtures/hyperliquid-hlp-child.json
+```
+
+### Run the test suite
+
+```bash
+python3 -m pytest
+npm --prefix tests install
+npm --prefix tests test
+```
+
+## CLI commands
+
+| Command | Description |
+|---|---|
+| `pft-positions validate <path>` | Validates JSON syntax, the v0 schema, and `provenance.content_hash` for a file or directory of `.json` files. |
+| `pft-positions parse <path>` | Parses, validates, and prints canonical JSON for a single snapshot file. |
+| `pft-positions emit <name>` | Prints one of the bundled reference fixtures. Use `--list` to see available names. |
+
+Current bundled fixtures: `delta-one`, `hyperliquid-hlp-child`, `option`, `yield`.
 
 ## Fixture corpus
 
-`fixtures/` is the authoritative executable corpus for package tests and CLI validation. `schema/examples/` remains as documentation examples for the published schema.
+`fixtures/` is the authoritative executable corpus for package tests and CLI validation. Each normalized fixture has a matching raw source payload in `fixtures/raw/` that documents the upstream API or manual input it was derived from.
 
-Normalized fixtures:
+### Normalized fixtures
 
-- `fixtures/delta-one.json`
-- `fixtures/hyperliquid-hlp-child.json`
-- `fixtures/option.json`
-- `fixtures/yield.json`
+| Fixture | Description |
+|---|---|
+| `fixtures/delta-one.json` | Single Binance BTC-USDT perpetual position (didactic example). |
+| `fixtures/hyperliquid-hlp-child.json` | Full 190-position snapshot from public Hyperliquid HLP child account `0x010461c14e146ac35fe42271bdc1134ee31c703a`. |
+| `fixtures/option.json` | Single Deribit BTC call option position (didactic example). |
+| `fixtures/yield.json` | Single Arbitrum USDAI vault yield position (didactic example). |
 
-Paired raw fixtures:
+### Paired raw fixtures
 
-- `fixtures/raw/delta-one.raw.json` normalizes to `fixtures/delta-one.json`
-- `fixtures/raw/hyperliquid-hlp-child.raw.json` normalizes to `fixtures/hyperliquid-hlp-child.json`
-- `fixtures/raw/option.raw.json` normalizes to `fixtures/option.json`
-- `fixtures/raw/yield.raw.json` normalizes to `fixtures/yield.json`
+| Raw fixture | Normalizes to |
+|---|---|
+| `fixtures/raw/delta-one.raw.json` | `fixtures/delta-one.json` |
+| `fixtures/raw/hyperliquid-hlp-child.raw.json` | `fixtures/hyperliquid-hlp-child.json` |
+| `fixtures/raw/option.raw.json` | `fixtures/option.json` |
+| `fixtures/raw/yield.raw.json` | `fixtures/yield.json` |
 
-The Hyperliquid fixture is a full delta-one/linear test case from public HLP child account `0x010461c14e146ac35fe42271bdc1134ee31c703a`. The raw fixture records the public HLP vault context used to identify whale addresses, including the HLP vault `0xdfc24b077bc1425ad1dea75bcb6f8158e10df303`, child accounts, and top public followers by vault equity. The normalized fixture contains all 190 open positions returned by Hyperliquid `clearinghouseState` at the captured `as_of` timestamp.
+### Hyperliquid whale test case
+
+The Hyperliquid fixture demonstrates that public wallet positions can be normalized into the snapshot format without private credentials:
+
+- **Source API**: `POST https://api.hyperliquid.xyz/info` with `{ "type": "clearinghouseState", "user": "0x010461c14e146ac35fe42271bdc1134ee31c703a" }`
+- **Whale identification**: Derived from the public HLP vault `0xdfc24b077bc1425ad1dea75bcb6f8158e10df303` via `vaultDetails`, which exposes child accounts and top public followers by vault equity.
+- **Coverage**: All 190 open perp positions in the selected HLP child account, normalized as `instrument_type: "linear"`.
+- **Raw provenance**: The raw fixture records the HLP vault context, child account list, and top followers for traceability.
 
 ## Sharing and ingestion
 
 Snapshots are plain JSON and can be shared in three compatible ways:
 
-- Manual sharing: paste or attach the canonical JSON produced by `pft-positions parse`.
-- TaskNode/MCP sharing: send the snapshot JSON through `pft-chatbot-mcp` as `content_type: "application/json"` with TaskNode sharing enabled.
-- Adapter sharing: exchange or wallet adapters can publish the normalized snapshot directly, or upload it to existing content storage/IPFS and share the resulting reference through current PostFiat interfaces.
+| Method | How it works |
+|---|---|
+| **Manual sharing** | Paste or attach the canonical JSON produced by `pft-positions parse`. |
+| **TaskNode/MCP sharing** | Send the snapshot JSON through `pft-chatbot-mcp` as `content_type: "application/json"` with TaskNode sharing enabled. |
+| **Adapter sharing** | Exchange or wallet adapters publish the normalized snapshot directly, or upload it to existing content storage/IPFS and share the resulting reference through current PostFiat interfaces. |
 
 The sharing layer is intentionally outside the v0 schema; the snapshot remains ingestible as a standalone JSON document regardless of transport.
 
-The v0 content hash rule is explicit: compute SHA-256 over canonical JSON bytes after omitting `provenance.content_hash` from the object. Canonical JSON sorts object keys recursively, preserves array order, uses compact separators, and encodes UTF-8 bytes.
+## Content hash
+
+`provenance.content_hash` is computed by:
+
+1. Parsing the snapshot JSON.
+2. Omitting `provenance.content_hash` from the object.
+3. Serializing canonical JSON with recursive object-key sorting, compact separators, preserved array order, and UTF-8 encoding.
+4. Computing lowercase SHA-256 hex over those canonical bytes.
+
+This avoids circular hashing and makes validation deterministic across whitespace and object key ordering differences.
 
 Sample validation report for `pft-positions validate fixtures/delta-one.json`:
 
@@ -79,12 +140,18 @@ Sample validation report for `pft-positions validate fixtures/delta-one.json`:
 }
 ```
 
-## Validate examples against schema
+## PostFiat ecosystem context
 
-```bash
-npm --prefix tests install
-npm --prefix tests test
-```
+This repository is designed to interoperate with the broader PostFiat tooling:
+
+| Repository | Role |
+|---|---|
+| [`pft-chatbot-mcp`](https://github.com/postfiatorg/pft-chatbot-mcp) | MCP server for Task Node message transport, encrypted content, IPFS storage, and bot registry. Snapshots can be shared as `application/json` message content or attachments. |
+| [`postfiatd`](https://github.com/postfiatorg/postfiatd) | XRPL-family ledger daemon. Snapshot JSON should be shared through content/message infrastructure rather than embedded directly in ledger memos. |
+| [`pftl-snap`](https://github.com/postfiatorg/pftl-snap) | MetaMask Snap for PFTL wallet management, memo transactions, and user-client context. |
+| [`explorer`](https://github.com/postfiatorg/explorer) | PFTL block explorer for transaction and memo display conventions. |
+| [`dynamic-unl-scoring`](https://github.com/postfiatorg/dynamic-unl-scoring) | AI-driven validator scoring service demonstrating PostFiat deployment, IPFS, and agent workflow patterns. |
+| [`validator-history-service`](https://github.com/postfiatorg/validator-history-service) | Ingestion/API service conventions and network environment patterns. |
 
 ## Repository layout
 
@@ -111,7 +178,7 @@ src/
   pft_positions/
 tests/
   test_reference_package.py
+  validate-examples.test.mjs
   package.json
   package-lock.json
-  validate-examples.test.mjs
 ```
