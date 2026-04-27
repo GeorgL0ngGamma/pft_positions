@@ -8,6 +8,7 @@ Public v0 specification for machine-readable position snapshots that Post Fiat a
 (re-upload a csv with new manually added transactions) - individual position updates not possible without re-upload of an entirely new .csv. 
 
 **Idea**: *Provide a general high resolution position snapshot for postfiat tasknode and AGTI*
+**Value add**: detect user churn holding coins, get higher resolution view of positioning for other postfiat trading-related workflows.
 
 **Solution Sketch**: 
 1) machine-readable position-snapshot  
@@ -16,8 +17,6 @@ Public v0 specification for machine-readable position snapshots that Post Fiat a
 - **Position Types**: linear, option, yield - crypto & non-crypto
 - **Origin**: pulled via exchange adapter, processed to canonical format (additionally could support IBKR or similar for non-crypto in the future)
 - **Origin Type**: internal tasknode user or public source (secondary, e.g. HyperLiquid wallets)    
-
-**Value add**: detect user churn holding coins, get higher resolution view of positioning for other postfiat trading-related workflows.
    
 ## What this repository provides
 
