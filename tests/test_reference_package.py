@@ -29,44 +29,44 @@ def test_fixture_hashes_match_deterministic_hash(fixture_path: Path) -> None:
 
 
 def test_hash_is_stable_across_key_order_and_whitespace() -> None:
-    snapshot = load_fixture("delta-one")
+    snapshot = load_fixture("linear")
     reordered = _reverse_object_keys(snapshot)
     pretty_roundtrip = json.loads(json.dumps(reordered, indent=4))
     assert content_hash(snapshot) == content_hash(pretty_roundtrip)
 
 
 def test_canonical_json_is_stable() -> None:
-    snapshot = load_fixture("delta-one")
+    snapshot = load_fixture("linear")
     assert canonical_json(snapshot) == canonical_json(json.loads(canonical_json(snapshot)))
 
 
 def test_semantic_mutation_changes_hash() -> None:
-    snapshot = load_fixture("delta-one")
+    snapshot = load_fixture("linear")
     mutated = json.loads(json.dumps(snapshot))
     mutated["positions"][0]["quantity"] = "2.00"
     assert content_hash(snapshot) != content_hash(mutated)
 
 
 def test_missing_required_schema_field_fails_validation() -> None:
-    snapshot = load_fixture("delta-one")
+    snapshot = load_fixture("linear")
     del snapshot["positions"][0]["risk"]["value_at_risk_1d"]
     assert any(issue.path == "/positions/0/risk/value_at_risk_1d" for issue in validate_snapshot(snapshot))
 
 
 def test_hash_mismatch_fails_validation() -> None:
-    snapshot = load_fixture("delta-one")
+    snapshot = load_fixture("linear")
     snapshot["provenance"]["content_hash"] = "0" * 64
     assert any(issue.path == "/provenance/content_hash" for issue in validate_snapshot(snapshot))
 
 
 def test_fixture_names_are_declared() -> None:
-    assert fixture_names() == ["delta-one", "hyperliquid-hlp-child", "option", "yield"]
+    assert fixture_names() == ["hyperliquid-hlp-child", "linear", "option", "yield"]
 
 
 def test_raw_fixtures_are_paired_with_normalized_fixtures() -> None:
     raw_dir = FIXTURES / "raw"
     expected = {
-        "delta-one.raw.json": "../delta-one.json",
+        "linear.raw.json": "../linear.json",
         "hyperliquid-hlp-child.raw.json": "../hyperliquid-hlp-child.json",
         "option.raw.json": "../option.json",
         "yield.raw.json": "../yield.json",
@@ -86,8 +86,8 @@ def test_validate_cli_accepts_fixture_directory() -> None:
     assert report["errors"] == []
     assert report["warnings"] == []
     assert [Path(file_report["file"]).name for file_report in report["files"]] == [
-        "delta-one.json",
         "hyperliquid-hlp-child.json",
+        "linear.json",
         "option.json",
         "yield.json",
     ]
@@ -96,7 +96,7 @@ def test_validate_cli_accepts_fixture_directory() -> None:
 
 def test_validate_cli_rejects_bad_file(tmp_path: Path) -> None:
     bad_file = tmp_path / "bad.json"
-    snapshot = load_fixture("delta-one")
+    snapshot = load_fixture("linear")
     snapshot["provenance"]["content_hash"] = "0" * 64
     bad_file.write_text(json.dumps(snapshot), encoding="utf-8")
     result = _run_cli("validate", str(bad_file))
@@ -109,7 +109,7 @@ def test_validate_cli_rejects_bad_file(tmp_path: Path) -> None:
 
 
 def test_validate_cli_file_report_has_required_fields() -> None:
-    result = _run_cli("validate", str(FIXTURES / "delta-one.json"))
+    result = _run_cli("validate", str(FIXTURES / "linear.json"))
     assert result.returncode == 0
     report = json.loads(result.stdout)
     assert set(["valid", "schema_version", "errors", "warnings"]).issubset(report)
@@ -120,7 +120,7 @@ def test_validate_cli_file_report_has_required_fields() -> None:
 
 
 def test_emit_cli_outputs_valid_fixture_json() -> None:
-    result = _run_cli("emit", "delta-one")
+    result = _run_cli("emit", "linear")
     assert result.returncode == 0
     snapshot = json.loads(result.stdout)
     assert validate_snapshot(snapshot) == []
@@ -137,9 +137,9 @@ def test_hyperliquid_fixture_contains_full_hlp_child_snapshot() -> None:
 
 
 def test_parse_cli_outputs_canonical_json() -> None:
-    result = _run_cli("parse", str(FIXTURES / "delta-one.json"))
+    result = _run_cli("parse", str(FIXTURES / "linear.json"))
     assert result.returncode == 0
-    assert result.stdout.rstrip("\n") == canonical_json(load_fixture("delta-one"))
+    assert result.stdout.rstrip("\n") == canonical_json(load_fixture("linear"))
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:

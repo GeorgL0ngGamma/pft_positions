@@ -1,7 +1,7 @@
 {
   "schema_version": "position-snapshot.v0",
   "spec_date": "2026-04",
-  "snapshot_id": "snap_fixture_delta_one",
+  "snapshot_id": "snap_fixture_linear",
   "as_of": "2026-04-24T10:00:00Z",
   "published_at": "2026-04-24T10:00:01Z",
   "publisher": {
@@ -21,11 +21,11 @@
     "sources": [
       {
         "source_type": "manual",
-        "source_id": "fixture:delta-one",
+        "source_id": "fixture:linear",
         "fetched_at": "2026-04-24T10:00:00Z"
       }
     ],
-    "content_hash": "58648428c51eeba9af3c1d1f1e507257ef6df8ada8d6055753dff06511a2b789"
+    "content_hash": "447dc45eeb09859574f359c8ecea66e5fc5956ac2d6a3fe1057e628a9f6b57ba"
   },
   "normalization": {
     "numeric_encoding": "decimal-string",
@@ -42,7 +42,7 @@
         "venue_id": "binance",
         "venue_type": "cex"
       },
-      "account_ref": "acct:fixture:delta",
+      "account_ref": "acct:fixture:linear",
       "ccxt": {
         "exchange_id": "binance",
         "market_symbol": "BTC/USDT:USDT"

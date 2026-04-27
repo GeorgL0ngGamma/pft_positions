@@ -13,7 +13,7 @@
   },
   "group_context": {
     "group_id": "network-alpha-cohort-a",
-    "thread_id": "thread-delta-one-live",
+    "thread_id": "thread-linear-live",
     "snapshot_scope": "network",
     "valuation_ccy": "USD"
   },
@@ -89,8 +89,8 @@
         "notional_change": "18312.10"
       },
       "tags": [
-        "delta-one",
-        "delta-engine"
+        "linear",
+        "linear-engine"
       ],
       "raw_ref": "ipfs://bafkreigh2akiscaildc"
     },

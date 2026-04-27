@@ -18,7 +18,7 @@ addFormats(ajv);
 const validate = ajv.compile(schema);
 
 const exampleFiles = [
-  "delta-one.example.json",
+  "linear.example.json",
   "option.example.json",
   "yield.example.json"
 ];

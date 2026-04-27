@@ -9,7 +9,7 @@ Public v0 specification for machine-readable position snapshots that Task Node a
 - **Executable fixture corpus** (`fixtures/`) with raw source payloads paired with normalized snapshots, including a full 190-position Hyperliquid public whale case.
 - **Python reference package and CLI** (`pft-positions`) for schema validation, canonical JSON emission, and content-hash verification.
 - **Three documentation example payloads** covering the v0 instrument categories:
-  - `schema/examples/delta-one.example.json` (Binance + Hyperliquid linear positions)
+  - `schema/examples/linear.example.json` (Binance + Hyperliquid linear positions)
   - `schema/examples/option.example.json` (Deribit options)
   - `schema/examples/yield.example.json` (Binance staking + Arbitrum vault yield)
 
@@ -72,7 +72,7 @@ npm --prefix tests test
 | `pft-positions parse <path>` | Parses, validates, and prints canonical JSON for a single snapshot file. |
 | `pft-positions emit <name>` | Prints one of the bundled reference fixtures. Use `--list` to see available names. |
 
-Current bundled fixtures: `delta-one`, `hyperliquid-hlp-child`, `option`, `yield`.
+Current bundled fixtures: `linear`, `hyperliquid-hlp-child`, `option`, `yield`.
 
 ## Fixture corpus
 
@@ -82,7 +82,7 @@ Current bundled fixtures: `delta-one`, `hyperliquid-hlp-child`, `option`, `yield
 
 | Fixture | Description |
 |---|---|
-| `fixtures/delta-one.json` | Single Binance BTC-USDT perpetual position (didactic example). |
+| `fixtures/linear.json` | Single Binance BTC-USDT perpetual position (didactic example). |
 | `fixtures/hyperliquid-hlp-child.json` | Full 190-position snapshot from public Hyperliquid HLP child account `0x010461c14e146ac35fe42271bdc1134ee31c703a`. |
 | `fixtures/option.json` | Single Deribit BTC call option position (didactic example). |
 | `fixtures/yield.json` | Single Arbitrum USDAI vault yield position (didactic example). |
@@ -91,7 +91,7 @@ Current bundled fixtures: `delta-one`, `hyperliquid-hlp-child`, `option`, `yield
 
 | Raw fixture | Normalizes to |
 |---|---|
-| `fixtures/raw/delta-one.raw.json` | `fixtures/delta-one.json` |
+| `fixtures/raw/linear.raw.json` | `fixtures/linear.json` |
 | `fixtures/raw/hyperliquid-hlp-child.raw.json` | `fixtures/hyperliquid-hlp-child.json` |
 | `fixtures/raw/option.raw.json` | `fixtures/option.json` |
 | `fixtures/raw/yield.raw.json` | `fixtures/yield.json` |
@@ -128,7 +128,7 @@ The sharing layer is intentionally outside the v0 schema; the snapshot remains i
 
 This avoids circular hashing and makes validation deterministic across whitespace and object key ordering differences.
 
-Sample validation report for `pft-positions validate fixtures/delta-one.json`:
+Sample validation report for `pft-positions validate fixtures/linear.json`:
 
 ```json
 {
@@ -136,7 +136,7 @@ Sample validation report for `pft-positions validate fixtures/delta-one.json`:
   "schema_version": "position-snapshot.v0",
   "errors": [],
   "warnings": [],
-  "file": "fixtures/delta-one.json"
+  "file": "fixtures/linear.json"
 }
 ```
 
@@ -160,16 +160,16 @@ schema/
   position-snapshot.v0.schema.json
   README.md
   examples/
-    delta-one.example.json
+    linear.example.json
     option.example.json
     yield.example.json
 fixtures/
-  delta-one.json
+  linear.json
   hyperliquid-hlp-child.json
   option.json
   yield.json
   raw/
-    delta-one.raw.json
+    linear.raw.json
     hyperliquid-hlp-child.raw.json
     option.raw.json
     yield.raw.json
