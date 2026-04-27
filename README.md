@@ -16,7 +16,8 @@ Public v0 specification for machine-readable position snapshots that Post Fiat a
 2) [to be implemented]: python program to pull positions from crypto exchanges and process into compliant snapshot format
 
 - **Position Types**: linear, option, yield - crypto & non-crypto
-- **Origin**: pulled via exchange adapter, processed to canonical format (additionally could support IBKR or similar for non-crypto in the future)
+- **Origin**: pulled via exchange adapter, processed to canonical format
+              (IBKR support or similar for non-crypto in the future)
 - **Origin Type**: internal tasknode user or public source (secondary, e.g. HyperLiquid wallets)    
    
 ## What this repository provides
