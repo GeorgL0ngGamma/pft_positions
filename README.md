@@ -1,11 +1,10 @@
 # pft_positions
 
-Public v0 specification for machine-readable position snapshots that Post Fiat agents can consume.
+Public v0 specification for machine-readable position snapshots and exchange adapter for Post Fiat.
 
 ## What problem does this solve?
 
-**Observation**: CoinMarketCap Portfolio Snapshot feature integrated in the Task Node is limited by position type (long only), manually created portfolios as opposed to wallet-synced ones and cumbersome upload procedure 
-(re-upload a csv with new manually added transactions) - individual position updates not possible without re-upload of an entirely new .csv. 
+**Observation**: CoinMarketCap Portfolio Snapshot feature integrated in the Task Node is limited to long-only positions, relies on manually created portfolios instead of wallet-synced data, and has a cumbersome upload process — individual position updates require re-uploading an entirely new CSV. 
 
 **Idea**: *Provide a general high resolution position snapshot for postfiat tasknode and AGTI*  
 
@@ -13,7 +12,7 @@ Public v0 specification for machine-readable position snapshots that Post Fiat a
 
 **Solution Sketch**: 
 1) machine-readable position-snapshot  
-2) [to be implemented]: python program to pull positions from crypto exchanges and process into compliant snapshot format
+2) [to be implemented]: exchange adapter (e.g. CCXT-based) connecting to major crypto exchanges via API, pulling live positions and processing them into compliant snapshot format
 
 - **Position Types**: `linear`, `option`, `yield` - crypto & non-crypto
 - **Origin**: pulled via exchange adapter, processed to canonical format
