@@ -8,7 +8,9 @@ Public v0 specification for machine-readable position snapshots and exchange ada
 
 **Idea**: *Provide a general high resolution position snapshot for postfiat tasknode and AGTI*  
 
-**Value add**: detect user churn holding coins, get higher resolution view of positioning for other postfiat trading-related workflows.
+**Value add**:
+- Detect user churn from holding coins
+- Higher resolution view of positioning for postfiat trading-related workflows
 
 **Solution Sketch**: 
 1) machine-readable position-snapshot  
