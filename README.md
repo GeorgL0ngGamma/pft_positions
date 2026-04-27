@@ -10,7 +10,7 @@ Public v0 specification for machine-readable position snapshots and exchange ada
 
 **Value add**:
 - Detect user churn from holding coins
-- Higher resolution view of positioning for postfiat trading-related workflows
+- Higher resolution view of positioning 
 
 **Solution Sketch**: 
 1) machine-readable position-snapshot  
