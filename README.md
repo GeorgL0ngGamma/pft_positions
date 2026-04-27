@@ -7,7 +7,7 @@ This repository defines:
 - Provenance and normalization conventions (`schema/README.md`)
 - Authoritative executable fixture corpus (`fixtures/`)
 - Python reference package and CLI (`pft-positions`)
-- Exactly three v0 example payloads:
+- Three documentation example payloads:
   - `schema/examples/delta-one.example.json`
   - `schema/examples/option.example.json`
   - `schema/examples/yield.example.json`
@@ -22,7 +22,7 @@ v0 is intentionally limited to position sharing. Trend/contrarian/churn/sentimen
 python3 -m pytest
 PYTHONPATH=src python3 -m pft_positions.cli validate fixtures
 PYTHONPATH=src python3 -m pft_positions.cli parse fixtures/delta-one.json
-PYTHONPATH=src python3 -m pft_positions.cli emit delta-one
+PYTHONPATH=src python3 -m pft_positions.cli emit hyperliquid-hlp-child
 ```
 
 After installing the package, the same CLI is available as:
@@ -30,7 +30,7 @@ After installing the package, the same CLI is available as:
 ```bash
 pft-positions validate fixtures
 pft-positions parse fixtures/delta-one.json
-pft-positions emit delta-one
+pft-positions emit hyperliquid-hlp-child
 ```
 
 The `validate` command validates JSON syntax, the v0 schema, and `provenance.content_hash`. `parse` is fixture-backed and prints canonical JSON for a valid snapshot. `emit` prints one of the bundled reference fixtures: `delta-one`, `hyperliquid-hlp-child`, `option`, or `yield`.
@@ -82,8 +82,8 @@ Sample validation report for `pft-positions validate fixtures/delta-one.json`:
 ## Validate examples against schema
 
 ```bash
-npm --prefix test install
-npm --prefix test test
+npm --prefix tests install
+npm --prefix tests test
 ```
 
 ## Repository layout
@@ -109,9 +109,9 @@ fixtures/
 src/
   README.md
   pft_positions/
-test/
-  package.json
-  validate-examples.test.mjs
 tests/
   test_reference_package.py
+  package.json
+  package-lock.json
+  validate-examples.test.mjs
 ```
