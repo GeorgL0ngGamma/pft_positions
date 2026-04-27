@@ -1,7 +1,24 @@
 # pft_positions
 
-Public v0 specification for machine-readable position snapshots that Task Node agents can consume as shared group state.
+Public v0 specification for machine-readable position snapshots that Post Fiat agents can consume.
 
+## What problem does this solve?
+
+Observation: CoinMarketCap Portfolio Snapshot feature integrated in the Task Node is limited by position type (long only), manually created portfolios as opposed to wallet-synced ones and cumbersome upload procedure 
+(re-upload a csv with new manually added transactions) - individual position updates not possible without re-upload of an entirely new .csv. 
+
+*Idea: Provide a general high resolution position snapshot for postfiat tasknode and AGTI*
+
+Sketch of a Solution: 
+1) machine-readable position-snapshot  
+2) [to be implemented]: python program to pull positions from crypto exchanges and process into compliant snapshot format
+
+- Position Types: linear, option, yield - crypto & non-crypto
+- Source: pulled via exchange adapter, processed to canonical format (additionally could support IBKR or similar for non-crypto in the future)
+- Source Type: internal tasknode user or public source (secondary, e.g. HyperLiquid wallets)    
+
+Potential Value add: detect user churn holding coins, get higher resolution view of positioning for other postfiat trading-related workflows.
+   
 ## What this repository provides
 
 - **Canonical JSON Schema** (`schema/position-snapshot.v0.schema.json`) defining the wire-level shape of a position snapshot.
